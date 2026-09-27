@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { classNames } from '@/lib/utils';
 
@@ -14,11 +15,18 @@ export function Badge({ children, className, dot }: { children: ReactNode; class
   );
 }
 
-export function ProgressBar({ value, max = 100, className, barClassName }: { value: number; max?: number; className?: string; barClassName?: string }) {
+export function ProgressBar({ value, max = 100, className, barClassName, animated = true }: { value: number; max?: number; className?: string; barClassName?: string; animated?: boolean }) {
   const pct = Math.min(100, Math.max(0, (value / max) * 100));
   return (
-    <div className={classNames('h-2 w-full rounded-full bg-ink-100 overflow-hidden', className)}>
-      <div className={classNames('h-full rounded-full transition-all duration-500', barClassName || 'bg-primary-500')} style={{ width: `${pct}%` }} />
+    <div className={classNames('h-2 w-full rounded-full bg-ink-100 overflow-hidden relative', className)}>
+      <div
+        className={classNames('h-full rounded-full transition-all duration-700 relative overflow-hidden', barClassName || 'bg-primary-500')}
+        style={{ width: `${pct}%` }}
+      >
+        {animated && pct > 0 && (
+          <div className="absolute inset-0 shimmer opacity-60" />
+        )}
+      </div>
     </div>
   );
 }
@@ -94,8 +102,38 @@ export function Stat({ label, value, sub }: { label: string; value: ReactNode; s
 export function Avatar({ name, color, size = 32 }: { name: string; color: string; size?: number }) {
   const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('');
   return (
-    <div className="rounded-full flex items-center justify-center text-white font-semibold shrink-0" style={{ backgroundColor: color, width: size, height: size, fontSize: size * 0.38 }}>
+    <div className="rounded-full flex items-center justify-center text-white font-semibold shrink-0 transition-transform hover:scale-110" style={{ backgroundColor: color, width: size, height: size, fontSize: size * 0.38 }}>
       {initials}
     </div>
   );
+}
+
+export function AnimatedCounter({ value, duration = 800, suffix = '', prefix = '' }: { value: number; duration?: number; suffix?: string; prefix?: string }) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const prevValueRef = useRef(0);
+
+  useEffect(() => {
+    const start = prevValueRef.current;
+    const end = value;
+    const startTime = performance.now();
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(start + (end - start) * eased);
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        prevValueRef.current = end;
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [value, duration]);
+
+  const decimals = Number.isInteger(value) ? 0 : 1;
+  return <>{prefix}{display.toFixed(decimals)}{suffix}</>;
 }

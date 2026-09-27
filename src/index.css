@@ -98,3 +98,43 @@
   0%, 100% { top: 8%; }
   50% { top: 88%; }
 }
+
+@layer utilities {
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+  .stagger-5 { animation-delay: 0.25s; }
+  .stagger-6 { animation-delay: 0.3s; }
+  .stagger-7 { animation-delay: 0.35s; }
+  .stagger-8 { animation-delay: 0.4s; }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500;
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    @apply animate-shimmer-bg;
+  }
+
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.7);
+  }
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.7);
+  }
+
+  .card-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover;
+  }
+
+  .glow-ring {
+    box-shadow: 0 0 0 1px rgba(43, 125, 166, 0.15), 0 4px 20px -4px rgba(43, 125, 166, 0.2);
+  }
+  .dark .glow-ring {
+    box-shadow: 0 0 0 1px rgba(71, 153, 194, 0.2), 0 4px 20px -4px rgba(71, 153, 194, 0.15);
+  }
+}
