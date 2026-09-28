@@ -63,7 +63,7 @@ export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose:
                 key={item.id}
                 onClick={() => { setPage(item.id); onClose(); }}
                 className={classNames(
-                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group',
+                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group hover:translate-x-1',
                   active ? 'bg-primary-600 text-white shadow-md shadow-primary-900/30' : 'text-ink-400 hover:bg-ink-800 hover:text-white',
                 )}
               >
@@ -131,12 +131,12 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
             <ChevronDown className="w-3.5 h-3.5 text-ink-400" />
           </button>
           {whOpen && (
-            <div className="absolute right-0 top-full mt-1 w-64 card shadow-panel p-1.5 animate-scale-in z-50">
+            <div className="absolute right-0 top-full mt-1 w-64 card shadow-panel p-1.5 animate-slide-down z-50">
               {warehouses.map(w => (
                 <button
                   key={w.id}
                   onClick={() => { setSelectedWarehouse(w.id); setWhOpen(false); }}
-                  className={classNames('w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 transition-colors', w.id === selectedWarehouse && 'bg-primary-50')}
+                  className={classNames('dropdown-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 transition-colors', w.id === selectedWarehouse && 'bg-primary-50')}
                 >
                   <p className="font-medium text-ink-700 text-xs">{w.name}</p>
                   <p className="text-[10px] text-ink-400">{w.code} · {w.location}</p>
@@ -166,17 +166,18 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           {notifOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 w-80 sm:w-96 card shadow-panel animate-scale-in z-50 max-h-[70vh] flex flex-col">
+              <div className="absolute right-0 top-full mt-1 w-80 sm:w-96 card shadow-panel animate-slide-down z-50 max-h-[70vh] flex flex-col">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-ink-200">
                   <span className="text-sm font-semibold text-ink-800">Notifications</span>
                   <button onClick={markAllNotificationsRead} className="text-xs text-primary-600 font-medium hover:underline">Mark all read</button>
                 </div>
                 <div className="overflow-y-auto flex-1">
-                  {notifications.map(n => (
+                  {notifications.map((n, ni) => (
                     <button
                       key={n.id}
                       onClick={() => { markNotificationRead(n.id); setPage(n.link.page as PageId); setNotifOpen(false); }}
-                      className={classNames('w-full text-left px-4 py-3 border-b border-ink-100 hover:bg-ink-50 transition-colors flex gap-3', !n.read && 'bg-primary-50/50')}
+                      className={classNames('dropdown-item w-full text-left px-4 py-3 border-b border-ink-100 hover:bg-ink-50 transition-colors flex gap-3', !n.read && 'bg-primary-50/50')}
+                      style={{ animationDelay: `${ni * 0.03}s` }}
                     >
                       <span className={classNames('w-2 h-2 rounded-full mt-1.5 shrink-0', n.severity === 'critical' ? 'bg-error-500' : n.severity === 'high' ? 'bg-warning-500' : 'bg-primary-500')} />
                       <div className="flex-1 min-w-0">
@@ -205,19 +206,19 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           {profileOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 w-56 card shadow-panel p-1.5 animate-scale-in z-50">
-                <div className="px-3 py-2 border-b border-ink-100 mb-1">
+              <div className="absolute right-0 top-full mt-1 w-56 card shadow-panel p-1.5 animate-slide-down z-50">
+                <div className="dropdown-item px-3 py-2 border-b border-ink-100 mb-1">
                   <p className="text-sm font-semibold text-ink-700">{currentUser.name}</p>
                   <p className="text-xs text-ink-400">{currentUser.email}</p>
                 </div>
-                <button onClick={() => { setPage('settings'); setProfileOpen(false); }} className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 flex items-center gap-2 text-ink-600">
+                <button onClick={() => { setPage('settings'); setProfileOpen(false); }} className="dropdown-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 flex items-center gap-2 text-ink-600">
                   <Settings className="w-4 h-4" /> Settings
                 </button>
-                <button className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 flex items-center gap-2 text-ink-600">
+                <button className="dropdown-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-ink-50 flex items-center gap-2 text-ink-600">
                   <User className="w-4 h-4" /> Profile
                 </button>
                 <div className="border-t border-ink-100 my-1" />
-                <button className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-error-50 flex items-center gap-2 text-error-600">
+                <button className="dropdown-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-error-50 flex items-center gap-2 text-error-600">
                   <X className="w-4 h-4" /> Sign Out
                 </button>
               </div>

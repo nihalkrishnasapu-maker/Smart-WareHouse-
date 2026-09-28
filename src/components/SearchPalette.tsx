@@ -99,9 +99,9 @@ export function SearchPalette({ open, onClose }: { open: boolean; onClose: () =>
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[10vh] px-4 animate-fade-in">
+    <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[10vh] px-4 animate-backdrop-in">
       <div className="absolute inset-0 bg-ink-950/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-xl bg-white dark:bg-ink-900 rounded-2xl shadow-panel border border-ink-200 dark:border-ink-800 animate-scale-in overflow-hidden">
+      <div className="relative w-full max-w-xl bg-white dark:bg-ink-900 rounded-2xl shadow-panel border border-ink-200 dark:border-ink-800 animate-pop-in overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-ink-200 dark:border-ink-800">
           <Search className="w-5 h-5 text-ink-400 shrink-0" />
@@ -165,9 +165,10 @@ export function SearchPalette({ open, onClose }: { open: boolean; onClose: () =>
                   onClick={() => { r.action(); if (query.trim()) addRecentSearch(query); }}
                   onMouseEnter={() => setSelectedIndex(i)}
                   className={classNames(
-                    'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors',
+                    'dropdown-item w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors',
                     i === selectedIndex ? 'bg-primary-50 dark:bg-primary-950/40' : 'hover:bg-ink-50 dark:hover:bg-ink-800',
                   )}
+                  style={{ animationDelay: `${i * 0.03}s` }}
                 >
                   <div className={classNames('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', r.type === 'order' ? 'bg-primary-100 dark:bg-primary-900' : r.type === 'product' ? 'bg-accent-100 dark:bg-accent-900' : r.type === 'exception' ? 'bg-error-100 dark:bg-error-900' : 'bg-ink-100 dark:bg-ink-800')}>
                     <r.icon className={classNames('w-4 h-4', r.type === 'order' ? 'text-primary-600 dark:text-primary-400' : r.type === 'product' ? 'text-accent-600 dark:text-accent-400' : r.type === 'exception' ? 'text-error-600 dark:text-error-400' : 'text-ink-500')} />

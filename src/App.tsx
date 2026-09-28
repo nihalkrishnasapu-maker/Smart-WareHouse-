@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StoreProvider, useStore } from '@/store';
 import { Sidebar, TopBar } from '@/components/Layout';
 import { DashboardPage } from '@/pages/DashboardPage';
@@ -41,7 +41,7 @@ function DemoModeBar() {
         )}
       </div>
       {showLog && demoLog.length > 0 && (
-        <div className="absolute bottom-4 right-4 z-30 w-80 max-h-64 overflow-y-auto card shadow-panel p-3 animate-scale-in">
+        <div className="absolute bottom-4 right-4 z-30 w-80 max-h-64 overflow-y-auto card shadow-panel p-3 animate-slide-down">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-ink-700">Event Log</span>
             <button onClick={() => setShowLog(false)} className="text-ink-400 hover:text-ink-600"><X className="w-3.5 h-3.5" /></button>
@@ -60,6 +60,11 @@ function DemoModeBar() {
 function AppContent() {
   const { page } = useStore();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [pageKey, setPageKey] = useState(0);
+
+  useEffect(() => {
+    setPageKey(k => k + 1);
+  }, [page]);
 
   const renderPage = () => {
     switch (page) {
@@ -85,7 +90,7 @@ function AppContent() {
         <TopBar onMenuClick={() => setMobileNavOpen(true)} />
         <DemoModeBar />
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          <div className="max-w-7xl mx-auto animate-fade-in">
+          <div key={pageKey} className="max-w-7xl mx-auto page-transition">
             {renderPage()}
           </div>
         </main>
